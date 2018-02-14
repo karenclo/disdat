@@ -14,6 +14,10 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 """
 apply
 
@@ -116,14 +120,14 @@ def apply(input_bundle, output_bundle, pipe_params, pipe_cls, input_tags, output
 
     if False:
         test = reexecute_dag
-        print "----START DAG TASK---"
-        print "task_id is {}".format(test.task_id)
-        print "task_family is {}".format(test.task_family)
-        print " class {}".format(test.__class__)
-        print " module {}".format(test.__module__)
-        print " inspect getfile(test) {}".format(inspect.getfile(test.__class__))
-        print "resolve_bundles requires {}".format(fs.DisdatFS.task_path_cache)
-        print "----END DAG TASK---"
+        print ("----START DAG TASK---")
+        print ("task_id is {}".format(test.task_id))
+        print ("task_family is {}".format(test.task_family))
+        print (" class {}".format(test.__class__))
+        print (" module {}".format(test.__module__))
+        print (" inspect getfile(test) {}".format(inspect.getfile(test.__class__)))
+        print ("resolve_bundles requires {}".format(fs.DisdatFS.task_path_cache))
+        print ("----END DAG TASK---")
 
     # This is a superior way of calling the task, because we can make it once
     # and not have to repeat the args into a 'fake' cli call.

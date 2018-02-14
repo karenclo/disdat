@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 """
 api
@@ -235,9 +238,9 @@ def apply(ctxt, input_bundle, output_bundle, transform, input_tags=None, output_
         disdat.apply.apply(input_bundle, output_bundle, dynamic_params, transform, input_tags, output_tags, force,
                            sysexit=False)
     except SystemExit as se:
-        print "SystemExist caught: {}".format(se)
+        print ("SystemExist caught: {}".format(se))
     except Exception as e:
-        print "Exception in apply: {}".format(e)
+        print ("Exception in apply: {}".format(e))
     finally:
         # Restore context.
         _ = fs.checkout(prior_context_name, save=False)

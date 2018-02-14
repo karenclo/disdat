@@ -14,6 +14,10 @@
 # limitations under the License.
 #
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import disdat.common
 import disdat.resources
 import disdat.utility.aws_s3 as aws

@@ -5,6 +5,11 @@ Unify DriverTask and PipeTask with one abstract base class.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+
 # Using print as a function makes it easier to switch between printing
 # during development and using logging.{debug, info, ...} in production.
 from __future__ import print_function
