@@ -14,14 +14,14 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 """
 DisDat constants
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 _MANAGED_OBJECTS = "objects"   # directory in the context for objects
 

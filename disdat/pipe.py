@@ -14,11 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
-
 """
 Pipe
 
@@ -37,6 +32,9 @@ available before I run.
 
 author: Kenneth Yocum
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 from disdat.pipe_base import PipeBase
 import disdat.common as common
@@ -110,9 +108,9 @@ class PipesExternalBundle(luigi.ExternalTask, PipeBase):
         bundle_df = self.pfs.cat(self.input_bundle_name)
         # to_json returns a list of dictionaries per row, take the first row
         bundle_files_dict = json.loads(bundle_df[0:1].to_json(orient='records'))[0]
-        print "PipesExternalBundle JSON {}".format(bundle_files_dict)
+        print("PipesExternalBundle JSON {}".format(bundle_files_dict))
         bundle_targets_dict = self.parse_pipe_outputs(self.make_luigi_targets_from_fqp, bundle_files_dict)
-        print "PipesExternalBundle TARGETS {}".format(bundle_targets_dict)
+        print("PipesExternalBundle TARGETS {}".format(bundle_targets_dict))
 
         return bundle_targets_dict
 
@@ -310,10 +308,10 @@ class PipeTask(luigi.Task, PipeBase):
 
         tasks = []
 
-        for user_arg_name, cls_and_params in rslt.iteritems():
+        for user_arg_name, cls_and_params in rslt.items():
             pipe_class, params = cls_and_params[0], cls_and_params[1]
 
-            if isinstance(pipe_class, str) or isinstance(pipe_class, unicode):
+            if isinstance(pipe_class, str) or isinstance(pipe_class, str):
                 """ if it is a string, find the Python task class """
                 pipe_class = DriverTask.get_task_cls(pipe_class)
 

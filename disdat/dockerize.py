@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 #
 # Copyright 2015, 2016, 2017  Human Longevity, Inc.
 #
@@ -13,10 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import disdat.common
 import disdat.resources
@@ -120,7 +119,7 @@ def dockerize(disdat_config, pipeline_root, pipeline_class_name, config_dir=None
             if 'error' in line:
                 raise RuntimeError(line)
             else:
-                print line
+                print(line)
 
 
 def main(disdat_config, args):

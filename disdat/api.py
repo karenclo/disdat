@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """
 api
 
@@ -48,6 +44,9 @@ dsdt.run(in, out, transform, in_tags, out_tags, force, **kwargs)
 
 Author: Kenneth Yocum
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 
 import logging
@@ -78,7 +77,7 @@ def contexts():
     """
 
     # TODO: have the fs object provide a wrapper function
-    return [ ctxt for ctxt in fs._all_contexts.keys()]
+    return [ ctxt for ctxt in list(fs._all_contexts.keys())]
 
 
 def bundle(data=None, tags=None):

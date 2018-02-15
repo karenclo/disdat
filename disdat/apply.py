@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """
 apply
 
@@ -27,6 +23,9 @@ pipes apply input_bundle output_bundle pipes_cls
 
 author: Kenneth Yocum
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 import logging
 import sys
@@ -273,18 +272,18 @@ def resolve_bundle(pfs, pipe, is_left_edge_task):
 
     # 1.) Get output bundle for pipe_id (the specific pipeline/transform/param hash).
 
-    if verbose: print "resolve_bundle: looking up bundle {}".format(pipe.pipe_id())
+    if verbose: print("resolve_bundle: looking up bundle {}".format(pipe.pipe_id()))
 
     if pipe.force:
         # Forcing recomputation through a manual --force directive
         _logger.debug("resolve_bundle: --force forcing a new output bundle.")
-        if verbose: print "resolve_bundle: --force forcing a new output bundle.\n"
+        if verbose: print("resolve_bundle: --force forcing a new output bundle.\n")
         pfs.new_output_hframe(pipe, is_left_edge_task)
         return
 
     bndl = pfs.get_hframe_by_proc(pipe.pipe_id())
     if bndl is None:
-        if verbose: print "resolve_bundle: No bundle with proc_name {}, getting new output bundle.\n".format(pipe.pipe_id())
+        if verbose: print("resolve_bundle: No bundle with proc_name {}, getting new output bundle.\n".format(pipe.pipe_id()))
         # no bundle, force recompute
         pfs.new_output_hframe(pipe, is_left_edge_task)
         return
@@ -292,22 +291,22 @@ def resolve_bundle(pfs, pipe, is_left_edge_task):
     # 2.) Bundle exists - lineage object tells us input bundles.
     lng = bndl.get_lineage()
     if lng is None:
-        if verbose: print "resolve_bundle: No lineage present, getting new output bundle.\n"
+        if verbose: print("resolve_bundle: No lineage present, getting new output bundle.\n")
         pfs.new_output_hframe(pipe, is_left_edge_task)
         return
 
     # 3.) Lineage record exists -- if new code, re-run
     current_version = pipe_base.get_pipe_version(pipe)
     if different_code_versions(current_version, lng):
-        if verbose: print "resolve_bundle: New code version, getting new output bundle.\n"
+        if verbose: print("resolve_bundle: New code version, getting new output bundle.\n")
         pfs.new_output_hframe(pipe, is_left_edge_task)
         return
 
     # 3.5.) Have we changed the output human bundle name?  If so, re-run task.
     current_human_name = pipe.pipeline_id()
     if current_human_name != bndl.get_human_name():
-        if verbose: print "resolve_bundle: New human name {} (prior {}), getting new output bundle.\n".format(
-            current_human_name, bndl.get_human_name())
+        if verbose: print("resolve_bundle: New human name {} (prior {}), getting new output bundle.\n".format(
+            current_human_name, bndl.get_human_name()))
         pfs.new_output_hframe(pipe, is_left_edge_task)
 
     # 4.) Check the inputs -- assumes we have processed upstream tasks already
@@ -326,7 +325,7 @@ def resolve_bundle(pfs, pipe, is_left_edge_task):
                     task.task_id))
         else:
             if pce.rerun:
-                if verbose: print "Resolve_bundle: an upstream task is in the pce and is being re-run, so we need to reun. getting new output bundle.\n"
+                if verbose: print("Resolve_bundle: an upstream task is in the pce and is being re-run, so we need to reun. getting new output bundle.\n")
                 pfs.new_output_hframe(pipe, is_left_edge_task)
                 return
 
@@ -342,7 +341,7 @@ def resolve_bundle(pfs, pipe, is_left_edge_task):
         for dep in lng.pb.depends_on:
             # Search by specific processing name, not the pipeline_id
             _logger.debug("Found dependency processing_name {} uuid {}".format(dep.hframe_name, dep.hframe_uuid))
-            if verbose: print "resolve_bundle: Found dependency processing_name {} uuid {}".format(dep.hframe_name, dep.hframe_uuid)
+            if verbose: print("resolve_bundle: Found dependency processing_name {} uuid {}".format(dep.hframe_name, dep.hframe_uuid))
             input_bndl = pfs.get_hframe_by_proc(dep.hframe_name)
 
             # No existing input bundle or it has a newer version
@@ -350,8 +349,8 @@ def resolve_bundle(pfs, pipe, is_left_edge_task):
             # If the input_bndl is None -- I ran, but my upstream doesn't exist,
             # the lineage may not reflect the new requires of this task.
             if input_bndl is None or input_bndl.pb.uuid != dep.hframe_uuid:
-                if verbose: print "resolve_bundle: no input bundle {} or uuid of bundle ne uuid {}\n".format(input_bndl,
-                                                                                                 dep.hframe_uuid)
+                if verbose: print("resolve_bundle: no input bundle {} or uuid of bundle ne uuid {}\n".format(input_bndl,
+                                                                                                 dep.hframe_uuid))
                 pfs.new_output_hframe(pipe, is_left_edge_task)
                 return
 
@@ -367,7 +366,7 @@ def resolve_bundle(pfs, pipe, is_left_edge_task):
                     return
 
     # 5.) Woot!  Reuse the found bundle.
-    if verbose: print "resolve_bundle: reusing bundle\n"
+    if verbose: print("resolve_bundle: reusing bundle\n")
     pfs.reuse_hframe(pipe, bndl, is_left_edge_task)
     return
 
@@ -384,7 +383,7 @@ def main(disdat_config, args):
     """
 
     if not fs.DisdatFS().in_context():
-        print "Apply unavailable -- Disdat not in a valid context."
+        print("Apply unavailable -- Disdat not in a valid context.")
         return
 
     dynamic_params = json.dumps(common.parse_params(args.params))

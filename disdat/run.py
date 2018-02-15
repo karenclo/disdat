@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """
 Run
 
@@ -40,16 +36,16 @@ It will then need to run it remotely.   Thus we need to submit a job.
 
 author: Kenneth Yocum
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 from disdat.pipe_base import PipeBase
-import disdat.constants as constants
-from disdat.hyperframe import FrameRecord
-import disdat.hyperframe_pb2 as hyperframe_pb2
 import disdat.fs as fs
 import disdat.common as common
 import disdat.utility.aws_s3 as aws
 import luigi
-from luigi import retcodes, build
+from luigi import build
 import boto3_session_cache as b3
 import docker
 import inspect
@@ -274,7 +270,7 @@ def _run(input_bundle, output_bundle, pipeline_params, pipeline_class_name,
                                 containerOverrides=container_overrides)
         status = job['ResponseMetadata']['HTTPStatusCode']
         if status == 200:
-            print 'Job {} (ID {}) with definition {} submitted to AWS Batch queue {}'.format(job['jobName'], job['jobId'], job_definition, job_queue)
+            print('Job {} (ID {}) with definition {} submitted to AWS Batch queue {}'.format(job['jobName'], job['jobId'], job_definition, job_queue))
         else:
             _logger.error('Job submission failed: HTTP Status {}'.format())
     elif backend == Backend.Local:
@@ -299,11 +295,11 @@ def _run(input_bundle, output_bundle, pipeline_params, pipeline_class_name,
             args = ' '.join(common.make_run_command(input_bundle, output_bundle, output_bundle_uuid, remote, branch_name,
                                                     input_tags, output_tags, pipeline_params))
 
-            print "run.py ARGS {}".format(args)
+            print("run.py ARGS {}".format(args))
 
             _logger.debug('Running image {} with arguments {}'.format(pipeline_image_name, args))
             stdout = client.containers.run(pipeline_image_name, args, detach=False, environment=environment, init=True, stderr=True, volumes=volumes)
-            print stdout
+            print(stdout)
         except docker.errors.ImageNotFound:
             _logger.error("Unable to find the docker image {}".format(pipeline_image_name))
             return
@@ -327,7 +323,7 @@ def main(disdat_config, args):
     pfs = fs.DisdatFS()
 
     if not pfs.in_context():
-        print "'Must be in a context to execute 'dsdt run'"
+        print("'Must be in a context to execute 'dsdt run'")
         return
 
     if args.backend is not None:
@@ -335,7 +331,7 @@ def main(disdat_config, args):
     else:
         backend = Backend.default()
 
-    print "backend type {} arg {}".format(type(backend), backend)
+    print("backend type {} arg {}".format(type(backend), backend))
 
     input_tags = common.parse_args_tags(args.input_tag)
 

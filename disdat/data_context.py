@@ -14,14 +14,19 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """
 A DisDat context
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from builtins import object
 import disdat.constants as constants
 import disdat.hyperframe_pb2 as hyperframe_pb2
 import disdat.hyperframe as hyperframe
@@ -39,7 +44,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
 import luigi
-from urlparse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin
 
 _logger = logging.getLogger(__name__)
 
@@ -150,7 +155,7 @@ class DataContext(object):
 
         if self.remote_ctxt_url is not None and self.remote_ctxt == context and \
                         os.path.normpath(os.path.dirname(self.remote_ctxt_url)) == os.path.normpath(s3_url):
-            print "Context already bound to remote at {}".format(s3_url)
+            print("Context already bound to remote at {}".format(s3_url))
             return
 
         if self.remote_ctxt != context:
@@ -170,9 +175,9 @@ class DataContext(object):
             _logger.debug("Binding local branch {} context {} to URL {}".format(self.local_ctxt, self.remote_ctxt, s3_url))
         else:
             if not force:
-                print "You are re-binding this branch to a different remote context.  You might have un-localized"
-                print "files in pulled bundles.  First, issue 'dsdt pull --localize' to make data local. "
-                print " Then run: `dsdt remote --force {}' to force re-binding the remote.".format(s3_url)
+                print("You are re-binding this branch to a different remote context.  You might have un-localized")
+                print("files in pulled bundles.  First, issue 'dsdt pull --localize' to make data local. ")
+                print(" Then run: `dsdt remote --force {}' to force re-binding the remote.".format(s3_url))
                 return
 
             _logger.debug("Un-binding local branch {} context {} current URL {}".format(self.local_ctxt,
@@ -463,7 +468,7 @@ class DataContext(object):
                     rcd = hyperframe.r_pb_fs(f, rcd_type)
                     store[rcd.pb.uuid] = rcd
 
-        for hfr in hframes.itervalues():
+        for hfr in hframes.values():
             if DataContext._validate_hframe(hfr, frames, auths):
                 # looks like a good hyperframe
                 # print "Writing out HFR {} {}".format(hfr.pb.human_name, hfr.pb.uuid)

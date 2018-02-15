@@ -1,6 +1,9 @@
 """
 Test for hyperframe implementations.
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 
 from sqlalchemy import create_engine
@@ -76,7 +79,7 @@ def test_load_context(disdatfs):
 
     branch_name = "dsdt-test-branch"
 
-    print "Found disdat fs {}".format(disdatfs)
+    print("Found disdat fs {}".format(disdatfs))
 
     disdatfs.branch(branch_name)
     disdatfs.checkout(branch_name)

@@ -5,15 +5,13 @@ Unify DriverTask and PipeTask with one abstract base class.
 
 """
 
-from __future__ import absolute_import
+from __future__ import print_function
 from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import
 
-
-# Using print as a function makes it easier to switch between printing
-# during development and using logging.{debug, info, ...} in production.
-from __future__ import print_function
-
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from abc import ABCMeta, abstractmethod
 from disdat.fs import DisdatFS
 from disdat.data_context import DataContext
@@ -28,10 +26,11 @@ import getpass
 import subprocess
 import inspect
 import collections
-from urlparse import urlparse
+from urllib.parse import urlparse
 import numpy as np
 import pandas as pd
 import disdat.hyperframe_pb2 as hyperframe_pb2
+from future.utils import with_metaclass
 
 _logger = logging.getLogger(__name__)
 
@@ -110,9 +109,7 @@ def get_pipe_version(pipe_instance):
     return obj_version
 
 
-class PipeBase(object):
-    __metaclass__ = ABCMeta
-
+class PipeBase(with_metaclass(ABCMeta, object)):
     BUNDLE_META = 'bundle_meta'
     BUNDLE_LINEAGE = 'bundle_lineage'
     HFRAME = 'hframe'
@@ -327,7 +324,7 @@ class PipeBase(object):
                 luigi_outputs = luigi_outputs[0]
         elif isinstance(output_value, dict):
             luigi_outputs = {}
-            for k, v in output_value.iteritems():
+            for k, v in output_value.items():
                 full_path = os.path.join(pce.path, v)
                 luigi_outputs[k] = self._interpret_scheme(full_path)
         else:
@@ -381,7 +378,7 @@ class PipeBase(object):
 
         elif isinstance(val, dict):
             presentation = hyperframe_pb2.ROW
-            for k, v in val.iteritems():
+            for k, v in val.items():
                 if False: # For now require dict values to be sequences
                     if not isinstance(v, collections.Sequence):
                         frames.append(DataContext.convert_scalar2frame(hfid, k, v, managed_path))
@@ -427,7 +424,7 @@ class PipeBase(object):
 
         luigi_outputs_dict = {}
 
-        for k, v in t_outputs.iteritems():
+        for k, v in t_outputs.items():
             if isinstance(v, list) or isinstance(v, tuple) or isinstance(v, dict):
                 raise Exception("Bad type in pipe_output specification {}".format(type(v)))
 

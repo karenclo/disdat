@@ -1,8 +1,12 @@
 """
 Test for hyperframe implementations.
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 
+from builtins import str
 from sqlalchemy import create_engine
 import disdat.hyperframe as hyperframe
 from disdat.hyperframe import r_pb_db, r_pb_fs, w_pb_db, w_pb_fs
@@ -117,7 +121,7 @@ def _make_hframe_record(name, tags=None, hframes=None):
 
     # This code tests our ability to turn ndarrays into pb messages and back
     if True:
-        for test_name, nda in test_data.iteritems():
+        for test_name, nda in test_data.items():
             frames.append(hyperframe.FrameRecord.from_ndarray(hfid, test_name, nda))
             if 'int' in test_name or 'float' in test_name:
                 test_series = nda.byteswap().newbyteorder()
@@ -158,32 +162,32 @@ def validate_hframe_record(hfr):
     for fr in hfr.get_frames(None, testing_dir=testdir):
         if 'bytes_data' in fr.pb.name:
             if bytes_data != fr.pb.data:
-                print "Frame {} busted".format(fr.pb.name)
-                print "original: {}".format(bytes_data)
-                print "found:    {}".format(fr.pb.data)
+                print("Frame {} busted".format(fr.pb.name))
+                print("original: {}".format(bytes_data))
+                print("found:    {}".format(fr.pb.data))
             else:
-                print "Verified Frame\t{}\t\tdtype {}.".format(fr.pb.name, None)
+                print("Verified Frame\t{}\t\tdtype {}.".format(fr.pb.name, None))
 
         elif fr.pb.name.endswith('_swapped'):
             # a byte-swapped, byte-order swapped array, test against original values
             original_nda = test_data[ fr.pb.name.replace('_swapped','') ]
             found_nda = fr.to_ndarray()
             if not np.array_equal(original_nda, found_nda):
-                print "Frame {} failed validation step:".format(fr.pb.name)
-                print "original: {}".format(original_nda)
-                print "found:    {}".format(found_nda)
+                print("Frame {} failed validation step:".format(fr.pb.name))
+                print("original: {}".format(original_nda))
+                print("found:    {}".format(found_nda))
             else:
-                print "Verified Frame\t{}\t\tdtype {}\t{}.".format(fr.pb.name, found_nda.dtype, found_nda.dtype.type)
+                print("Verified Frame\t{}\t\tdtype {}\t{}.".format(fr.pb.name, found_nda.dtype, found_nda.dtype.type))
 
         elif fr.pb.name in test_data:
             original_nda = test_data[fr.pb.name]
             found_nda = fr.to_ndarray()
             if not np.array_equal(original_nda, found_nda):
-                print "Frame {} failed validation step:".format(fr.pb.name)
-                print "original: {}".format(original_nda)
-                print "found:    {}".format(found_nda)
+                print("Frame {} failed validation step:".format(fr.pb.name))
+                print("original: {}".format(original_nda))
+                print("found:    {}".format(found_nda))
             else:
-                print "Verified Frame\t{}\t\tdtype {}\t{}".format(fr.pb.name, found_nda.dtype, found_nda.dtype.type)
+                print("Verified Frame\t{}\t\tdtype {}\t{}".format(fr.pb.name, found_nda.dtype, found_nda.dtype.type))
 
 
 ##########################################

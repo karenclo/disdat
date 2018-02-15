@@ -14,10 +14,6 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """
 Add
 
@@ -27,6 +23,10 @@ pipe_base, so we're not repeating that code inside fs.py.
 
 author: Kenneth Yocum
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import str
 from disdat.pipe_base import PipeBase
 import disdat.constants as constants
 from disdat.hyperframe import FrameRecord

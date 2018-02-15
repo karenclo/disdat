@@ -14,25 +14,32 @@
 # limitations under the License.
 #
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 """
 Configuration
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
 import json
 import logging
 import os
 import sys
-import ConfigParser
+import configparser
 import shutil
 from disdat import resource
 import disdat.config
 import luigi
 
-from urlparse import urlparse
+from urllib.parse import urlparse
+from future.utils import with_metaclass
 
 _logger = logging.getLogger(__name__)
 
@@ -81,8 +88,8 @@ class SingletonType(type):
             return self.__instance
 
 
-class MySingleton(object):
-    __metaclass__ = SingletonType
+class MySingleton(with_metaclass(SingletonType, object)):
+    pass
 
 
 class DisdatConfig(object):
@@ -146,7 +153,7 @@ class DisdatConfig(object):
         """
 
         _logger.debug("Loading config file [{}]".format(disdat_config_file))
-        config = ConfigParser.SafeConfigParser({'meta_dir_root': self.meta_dir_root, 'ignore_code_version': 'False'})
+        config = configparser.SafeConfigParser({'meta_dir_root': self.meta_dir_root, 'ignore_code_version': 'False'})
         config.read(disdat_config_file)
         self.meta_dir_root = os.path.expanduser(config.get('core', 'meta_dir_root'))
         self.meta_dir_root = DisdatConfig._fix_relative_path(disdat_config_file, self.meta_dir_root)
@@ -156,7 +163,7 @@ class DisdatConfig(object):
             self.logging_config = os.path.expanduser(config.get('core', 'logging_conf_file'))
             self.logging_config = DisdatConfig._fix_relative_path(disdat_config_file, self.logging_config)
             logging.config.fileConfig(self.logging_config, disable_existing_loggers=False)
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             pass
 
         # Set up luigi configuration
@@ -207,7 +214,7 @@ class DisdatConfig(object):
 
         # Make sure paths are absolute in luigi config
         luigi_dir = os.path.join(directory, LUIGI_FILE)
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(luigi_dir)
         value = config.get('core', 'logging_conf_file')
         config.set('core', 'logging_conf_file', os.path.expanduser(value))
@@ -329,7 +336,7 @@ def explode_json_column(df, column, prefix=None, inplace=False, drop=False):
 
     # Check to see if it's already been decoded
     tp = type(df[column][0])
-    if tp not in [unicode, str]:
+    if tp not in [str, str]:
         _logger.debug('Column %s already of type %s; unchanged' % (column, tp))
         return (df, [])
 
@@ -359,7 +366,7 @@ def explode_json_column(df, column, prefix=None, inplace=False, drop=False):
             columns_new += [column_new]
             df[column_new] = json_texts.apply((lambda x: x[i]))
     elif json_type == dict:
-        keys = json_texts[0].keys()
+        keys = list(json_texts[0].keys())
         _logger.debug('Column %s is a JSON object with %d keys' % (column, len(keys)))
         for i in keys:
             column_new = '%s.%s%s' % (column, prefix, i)
