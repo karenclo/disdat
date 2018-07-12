@@ -433,6 +433,36 @@ class DisdatFS(object):
 
         retcodes.run_with_retcodes(args)
 
+    def view(self, bundle_name, path_name, tags):
+        """  Link this bundles directory to any directory on the user's local FS.
+        We create a directory at the path given the bundle name prepended with 'disdat_'
+
+        Args:
+            bundle_name (str):
+            path_name (str):
+
+        Returns:
+
+        """
+        if not self.in_context():
+            _logger.warning('Not in a data context')
+            return
+        _logger.debug('Linking bundle {} to path {}'.format(path_name, path_name))
+
+        # we only make the instance to add the output bundle -- it MUST have the same args as args below!
+        add_pipe = disdat.add.AddTask(path_name, bundle_name, tags)
+
+        self.new_output_hframe(add_pipe, is_left_edge_task=False)
+
+        args = [disdat.add.AddTask.task_family,
+                '--local-scheduler',
+                '--input-path', path_name,
+                '--output-bundle', bundle_name,
+                '--tags', json.dumps(tags)
+                ]
+
+        retcodes.run_with_retcodes(args)
+
     def get_latest_hframe(self, human_name, tags=None, getall=False):
         """
         Given bundle_name, what is the most recent one (by date created) in this context?
@@ -1401,6 +1431,20 @@ def _branch(fs, args):
         fs.branch(args.context)
 
 
+def _view(fs, args):
+    """
+    Simply create a symlink to the bundle
+
+    Args:
+        fs:
+        args:
+
+    Returns:
+
+    """
+    fs.view(args.bundle, args.path_name)
+
+
 def _add(fs, args):
 
     fs.add(args.bundle, args.path_name, tags=common.parse_args_tags(args.tag))
@@ -1497,6 +1541,13 @@ def init_fs_cl(subparsers):
         type=str,
         help='Switch contexts to "<local context>".')
     checkout_p.set_defaults(func=lambda args: _checkout(fs, args))
+
+
+    # view
+    view_p = subparsers.add_parser('view', description='Create a symlink to the contents of this bundle.')
+    view_p.add_argument('bundle', type=str, help='The source bundle in the current context')
+    view_p.add_argument('path_name', type=str, help='Destination directory', action='store')
+    view_p.set_defaults(func=lambda args: _view(fs, args))
 
     # add
     add_p = subparsers.add_parser('add', description='Create a bundle from a .csv, .tsv, or a directory of files.')

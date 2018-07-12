@@ -387,6 +387,10 @@ class PipeTask(luigi.Task, PipeBase):
 
         try:
             user_rtn_val = self.pipe_run(**kwargs)
+            # TODO: If we want to suppor Luigi-like dynamic params, then something like this
+            # if isinstance(user_rtn_val, PipeTask):
+            #    yield user_rtn_val
+
         except Exception as error:
             """ If user's pipe fails for any reason, remove bundle dir and raise """
             rm_bundle_dir()
